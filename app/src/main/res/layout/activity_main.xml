@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MyActivity.MainActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:layout_height="?attr/actionBarSize"
+        android:layout_width="match_parent"
+        android:id="@+id/myToolbar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        android:theme="?attr/toolbarTheme"
+        app:title="Daily"
+        app:titleTextColor="#000000"
+        android:elevation="5dp"
+        android:background="?attr/colorPrimary">
+    </androidx.appcompat.widget.Toolbar>
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/view_page"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+
+
+    <include
+        layout="@layout/bottom" />
+
+
+</LinearLayout>

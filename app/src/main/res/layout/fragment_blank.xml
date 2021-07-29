@@ -1,35 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:orientation="vertical"
     android:layout_height="match_parent"
     android:background="#f2f3f5"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
     tools:context=".MyFragment.Fragment1">
-
-
-    <com.example.daily.MyView.LeftListView
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:id="@+id/to_do"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:background="@drawable/ifdone_tag">
+            <TextView
+                android:layout_width="40dp"
+                android:layout_marginRight="10dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:background="@null"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:textColor="#a2a2a2"
+                android:hint="待 办"
+                android:textSize="12sp" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/done"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:gravity="center"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:background="@drawable/ifdone_tag">
+            <TextView
+                android:layout_width="40dp"
+                android:layout_marginRight="10dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:background="@null"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:textColor="#a2a2a2"
+                android:hint="已完成"
+                android:textSize="12sp" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/undone"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:gravity="center"
+            android:background="@drawable/ifdone_tag">
+            <TextView
+                android:layout_width="40dp"
+                android:layout_marginRight="10dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:background="@null"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:textColor="#a2a2a2"
+                android:hint="未完成"
+                android:textSize="12sp" />
+        </LinearLayout>
+    </LinearLayout>
+    <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f2f3f5">
+    <com.example.daily.MyView.NoSlidingViewPager
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:background="@drawable/corner"
-        android:listSelector="@android:color/transparent"
-        android:divider="@drawable/divider"
-        android:dividerHeight="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginRight="10dp"
         android:layout_marginLeft="10dp"
-        android:scrollbars="none"
-        android:id="@+id/lv">
-    </com.example.daily.MyView.LeftListView>
-<!--<androidx.viewpager.widget.ViewPager-->
-<!--    android:layout_height="match_parent"-->
-<!--    android:layout_width="match_parent"-->
-<!--    android:background="@drawable/corner"-->
-<!--    android:layout_marginTop="8dp"-->
-<!--    android:layout_marginRight="10dp"-->
-<!--    android:layout_marginLeft="10dp"-->
-<!--    android:id="@+id/view_page_2"/>-->
+        android:id="@+id/view_page_2"/>
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -47,3 +99,19 @@
         android:layout_marginBottom="20dp"
         android:src="@drawable/add" />
 </RelativeLayout>
+
+    <!--    <com.example.daily.MyView.LeftListView-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:background="@drawable/corner"-->
+<!--        android:listSelector="@android:color/transparent"-->
+<!--        android:divider="@drawable/divider"-->
+<!--        android:dividerHeight="8dp"-->
+<!--        android:layout_marginTop="8dp"-->
+<!--        android:layout_marginRight="10dp"-->
+<!--        android:layout_marginLeft="10dp"-->
+<!--        android:scrollbars="none"-->
+<!--        android:id="@+id/lv">-->
+<!--    </com.example.daily.MyView.LeftListView>-->
+
+</LinearLayout>

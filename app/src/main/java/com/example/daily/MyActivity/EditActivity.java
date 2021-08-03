@@ -33,7 +33,7 @@ public class EditActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView eback;
     private LinearLayout Ltag,Ldelete,Lmore;
     private TextView etag,etime;
-    private String content,time,title;
+    private String content,time,title,state;
     private int tag,id;
     Context context = MyApplication.getInstance();
 
@@ -63,6 +63,7 @@ public class EditActivity extends AppCompatActivity implements View.OnClickListe
         time = bundle.getString("time");
         tag = bundle.getInt("tag");
         id=bundle.getInt("id");
+        state = bundle.getString("state");
         switch(tag){
             case 0:
                 etag.setText("学习");
@@ -101,6 +102,7 @@ public class EditActivity extends AppCompatActivity implements View.OnClickListe
         intent.putExtra(NoteDailogFragment.TITLE, etitle.getText().toString());
         intent.putExtra(NoteDailogFragment.CONTENT, econtent.getText().toString());
         intent.putExtra(NoteDailogFragment.TAG, tag);
+        intent.putExtra(NoteDailogFragment.STATE, state);
         intent.putExtra("id", id);
         intent.putExtra(NoteDailogFragment.TIME,etime.getText().toString());//dateToStr()
         setResult(RESULT_OK, intent);

@@ -7,15 +7,20 @@ public class DailyTask {
     private String time;
     private int tag;
 
+
+
+    private String state;
+
     public DailyTask(){
 
     }
 
-    public DailyTask(String content,String title,String time, int tag){
-        this.content = content;
+    public DailyTask(String content,String title,String time, int tag,String state){
         this.title = title;
+        this.content = content;
         this.time = time;
         this.tag = tag;
+        this.state = state;
     }
 
     public long getId() {
@@ -25,7 +30,13 @@ public class DailyTask {
     public void setId(long id) {
         this.id = id;
     }
+    public String getState() {
+        return state;
+    }
 
+    public void setState(String state) {
+        this.state = state;
+    }
 
     public String getTitle() {
         return title;

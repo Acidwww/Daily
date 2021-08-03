@@ -11,6 +11,8 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,7 +20,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.DatePicker;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.daily.MyAdapter.LeftAdapter;
 import com.example.daily.MyView.LeftListView;
@@ -29,10 +33,14 @@ import com.example.daily.Others.DailyTask;
 import com.example.daily.MyActivity.EditActivity;
 import com.example.daily.Others.MyApplication;
 import com.example.daily.R;
+import com.example.daily.util.MyTime;
 import com.example.daily.util.ToastUtil;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.lxj.xpopup.XPopup;
+import com.lxj.xpopup.interfaces.OnConfirmListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
@@ -51,14 +59,16 @@ public class Fragment1 extends Fragment {
     private NoSlidingViewPager vp;
     private FloatingActionButton fab;
     private LinearLayout lto,ldone,lundone,lcr;
-
-    View rootview;
+    private View rootview;
     private LeftAdapter adapter1,adapter2,adapter3;
-    List<DailyTask> notes=new ArrayList<>();
-    Context context = MyApplication.getInstance();
-    Context mcontext;
-    int year,month,day;
-    DatePicker datePicker;
+    private List<DailyTask> allnotes=new ArrayList<>();
+    private List<DailyTask> todonotes=new ArrayList<>();
+    private List<DailyTask> donenotes=new ArrayList<>();
+    private List<DailyTask> undonenotes=new ArrayList<>();
+    private Context context = MyApplication.getInstance();
+    private Context mcontext;
+    private String today;
+
 
 
 
@@ -83,7 +93,8 @@ public class Fragment1 extends Fragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
         }
-
+        MyTime myTime=new MyTime();
+        today=myTime.getToday();
     }
 
     @Override
@@ -147,9 +158,9 @@ public class Fragment1 extends Fragment {
         lv2=view2.findViewById(R.id.lv1);
         lv3=view3.findViewById(R.id.lv1);
 
-        adapter1 = new LeftAdapter(mcontext, notes,lv1.getRightViewWidth());
-        adapter2 = new LeftAdapter(mcontext, notes,lv2.getRightViewWidth());
-        adapter3 = new LeftAdapter(mcontext, notes,lv3.getRightViewWidth());
+        adapter1 = new LeftAdapter(mcontext, todonotes,lv1.getRightViewWidth());
+        adapter2 = new LeftAdapter(mcontext, donenotes,lv2.getRightViewWidth());
+        adapter3 = new LeftAdapter(mcontext, undonenotes,lv3.getRightViewWidth());
         refreshListView();
         lv1.setAdapter(adapter1);
         lv2.setAdapter(adapter2);
@@ -178,6 +189,32 @@ public class Fragment1 extends Fragment {
                 removeNote(position);
             }
         });
+        adapter1.setOnCheckClickListener(new LeftAdapter.OnCheckClickListener() {
+            @Override
+            public void onCheckClick(View v,int position) {
+                DailyTask crNote;
+                CRUD op = new CRUD(mcontext);
+                op.open();
+                crNote=todonotes.get(position);
+                if(crNote.getState().equals("待完成")){
+                    crNote.setState("已完成");
+                    op.updateNote(crNote);
+                    op.close();
+                    ImageView iv=v.findViewById(R.id.check);
+                    iv.setImageResource(R.drawable.check);
+                    ToastUtil.showToast(mcontext,"计划完成");
+                }else if(crNote.getState().equals("已完成")){
+                    crNote.setState("待完成");
+                    op.updateNote(crNote);
+                    op.close();
+                    ImageView iv=v.findViewById(R.id.check);
+                    iv.setImageResource(R.drawable.uncheck);
+                    ToastUtil.showToast(mcontext,"取消成功");
+
+                }
+
+            }
+        });
 
         lv1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -190,6 +227,7 @@ public class Fragment1 extends Fragment {
                 bundle.putString("time", curNote.getTime());
                 bundle.putInt("tag", curNote.getTag());
                 bundle.putString("content", curNote.getContent());
+                bundle.putString("state", curNote.getState());
                 intent.putExtras(bundle);
                 startActivityForResult(intent,REQUEST_CODE_EDIT);
             }
@@ -203,7 +241,6 @@ public class Fragment1 extends Fragment {
 
             }
         });
-        initview();
         return rootview;
     }
 
@@ -215,6 +252,7 @@ public class Fragment1 extends Fragment {
                 lcr.setSelected(false);
                 lto.setSelected(true);
                 lcr=lto;
+                refreshListView();
                 break;
             case R.id.done:
                 vp.setCurrentItem(1);
@@ -222,6 +260,7 @@ public class Fragment1 extends Fragment {
                 lcr.setSelected(false);
                 ldone.setSelected(true);
                 lcr=ldone;
+                refreshListView();
                 break;
             case R.id.undone:
                 vp.setCurrentItem(2);
@@ -229,6 +268,7 @@ public class Fragment1 extends Fragment {
                 lcr.setSelected(false);
                 lundone.setSelected(true);
                 lcr=lundone;
+                refreshListView();
                 break;
 
         }
@@ -236,7 +276,7 @@ public class Fragment1 extends Fragment {
 
 
     private void removeNote(int position) {
-        String result=notes.get(position).getTitle()+"\n"+position;
+        String result=todonotes.get(position).getTitle()+"\n"+position;
         ToastUtil.showToast(context,result);
         CRUD op = new CRUD(context);
         op.open();
@@ -254,7 +294,8 @@ public class Fragment1 extends Fragment {
                 String title = data.getStringExtra(NoteDailogFragment.TITLE);
                 String time = data.getStringExtra(NoteDailogFragment.TIME);
                 int tag = data.getIntExtra(NoteDailogFragment.TAG, 0);
-                DailyTask note = new DailyTask(content, title, time, tag);
+                String state = "待完成";
+                DailyTask note = new DailyTask(content, title, time, tag, state);
                 CRUD op = new CRUD(context);
                 op.open();
                 op.addNote(note);
@@ -267,8 +308,9 @@ public class Fragment1 extends Fragment {
                 String title = data.getStringExtra(NoteDailogFragment.TITLE);
                 String time = data.getStringExtra(NoteDailogFragment.TIME);
                 int tag = data.getIntExtra(NoteDailogFragment.TAG, 0);
+                String state = data.getStringExtra(NoteDailogFragment.STATE);
                 long id = (long) data.getIntExtra("id", 0);
-                DailyTask note = new DailyTask(content, title, time, tag);
+                DailyTask note = new DailyTask(content, title, time, tag, state);
                 Log.e("AfterEdit:************", id + "");
                 note.setId(id);
                 CRUD op = new CRUD(mcontext);
@@ -289,18 +331,34 @@ public class Fragment1 extends Fragment {
 
 
 
-    private void initview() {
-        //TextView tv = rootview.findViewById(R.id.text_1);
-        //tv.setText(mParam1);
-    }
+
     public void refreshListView(){
         CRUD op = new CRUD(mcontext);
         op.open();
-        // set adapter
-        if (notes.size() > 0) notes.clear();
-        notes.addAll(op.getAllNotes());
+        if (allnotes.size() > 0) allnotes.clear();
+        allnotes.addAll(op.getAllNotes());
+        if (todonotes.size() > 0) {
+            TextView emptytext=rootview.findViewById(R.id.empty_text);
+            emptytext.setText("");
+            todonotes.clear();
+        }
+        for(DailyTask e:allnotes){
+            if(e.getTime().compareTo(today)>=0){
+                todonotes.add(e);
+            }
+        }
+        if (todonotes.size() > 0) {
+            TextView emptytext=rootview.findViewById(R.id.empty_text);
+            emptytext.setText("");
+        }
+        if (donenotes.size() > 0) donenotes.clear();
+        donenotes.addAll(op.getStateNotes("已完成"));
+        if (undonenotes.size() > 0) undonenotes.clear();
+        undonenotes.addAll(op.getStateNotes("未完成"));
         op.close();
         adapter1.notifyDataSetChanged();
+        adapter2.notifyDataSetChanged();
+        adapter3.notifyDataSetChanged();
     }
     @Override
     public void onAttach(Activity activity) {

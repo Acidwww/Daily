@@ -26,6 +26,7 @@ import androidx.fragment.app.DialogFragment;
 
 import com.example.daily.Others.MyApplication;
 import com.example.daily.R;
+import com.example.daily.util.MyTime;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
 
@@ -44,6 +45,7 @@ public class NoteDailogFragment extends DialogFragment implements View.OnClickLi
     public static final String CONTENT = "content";
     public static final String TAG = "tag";
     public static final String TIME = "time";
+    public static final String STATE = "state";
     private String mYear ,mMonth,mDay;
     private LinearLayout tag_show;
     private EditText title;
@@ -52,7 +54,9 @@ public class NoteDailogFragment extends DialogFragment implements View.OnClickLi
     private Button creat;
     private ImageView close;
     private int Tag;
-    Context context = MyApplication.getInstance();
+    MyTime myTime=new MyTime();
+    String today=myTime.getToday();//获取日期的天
+
 
 
 
@@ -78,12 +82,8 @@ public class NoteDailogFragment extends DialogFragment implements View.OnClickLi
         time= view.findViewById(R.id.note_time);
         creat= view.findViewById(R.id.note_creat);
         content= view.findViewById(R.id.note_content);
-        Calendar calendar = Calendar.getInstance();
-        mYear = String.valueOf(calendar.get(Calendar.YEAR) + 1);
-        mMonth = String.valueOf(calendar.get(Calendar.MONTH) + 1);        //获取日期的月
-        mDay = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));      //获取日期的天
-
-        time.setText(mMonth+"月"+mDay+"日");
+        Log.e("Time",today);
+        time.setText(today.split("[年]")[1]);
         close.setOnClickListener(this);
         creat.setOnClickListener(this);
         time.setOnClickListener(this);
@@ -106,7 +106,7 @@ public class NoteDailogFragment extends DialogFragment implements View.OnClickLi
                     Intent intent= new Intent();
                     intent.putExtra(TITLE, title.getText().toString());
                     intent.putExtra(TAG, Tag);
-                    intent.putExtra(TIME, time.getText().toString());
+                    intent.putExtra(TIME, today.split("[年]")[0]+"年"+time.getText().toString());
                     intent.putExtra(CONTENT, content.getText().toString());
                     getTargetFragment().onActivityResult(REQUEST_CODE_NEW, Activity.RESULT_OK, intent);
                 }

@@ -10,30 +10,30 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-
 import com.example.daily.Others.DailyTask;
+import com.example.daily.Others.Plan;
+import com.example.daily.Others.Today;
 import com.example.daily.Others.onRightItemClickListener;
 import com.example.daily.R;
 
 import java.util.List;
 
-public class LeftAdapter extends BaseAdapter {
-
+public class PlanLeftAdapter extends BaseAdapter {
     private onRightItemClickListener mListener=null;
-    private OnCheckClickListener mcheckListener=null;
+    private PlanLeftAdapter.OnCheckClickListener mcheckListener=null;
     private Context context;
-    private List<DailyTask> list;
-    private List<DailyTask> oldlist;
+    private List<Plan> list;
+    private List<Plan> oldlist;
     private int mRightWidth = 0;
 
     public void setOnRightItemClickListener(onRightItemClickListener listener){
         mListener=listener;
     }
-    public void setOnCheckClickListener(OnCheckClickListener listener){
+    public void setOnCheckClickListener(PlanLeftAdapter.OnCheckClickListener listener){
         mcheckListener=listener;
     }
 
-    public LeftAdapter(Context context, List<DailyTask> list, int mRightWidth){
+    public PlanLeftAdapter(Context context, List<Plan> list, int mRightWidth){
         this.context=context;
         this.list=list;
         oldlist=list;
@@ -57,10 +57,10 @@ public class LeftAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        final ViewHolder viewHolder;
+        final PlanLeftAdapter.ViewHolder viewHolder;
         if(convertView==null){
             convertView=View.inflate(context, R.layout.left_listview_item,null);
-            viewHolder=new ViewHolder();
+            viewHolder=new PlanLeftAdapter.ViewHolder();
             viewHolder.item_left=convertView.findViewById(R.id.left_listview_item_leftlayout);
             viewHolder.item_right= convertView.findViewById(R.id.left_listview_item_rightlayout);
             viewHolder.title= convertView.findViewById(R.id.left_title);
@@ -69,7 +69,7 @@ public class LeftAdapter extends BaseAdapter {
 
             convertView.setTag(viewHolder);
         }else{
-            viewHolder= (ViewHolder) convertView.getTag();
+            viewHolder= (PlanLeftAdapter.ViewHolder) convertView.getTag();
         }
 
         //动态获取left 和right的宽度
@@ -77,18 +77,15 @@ public class LeftAdapter extends BaseAdapter {
         viewHolder.item_left.setLayoutParams(lp1);
         LinearLayout.LayoutParams lp2=new LinearLayout.LayoutParams(mRightWidth, LinearLayout.LayoutParams.MATCH_PARENT);
         viewHolder.item_right.setLayoutParams(lp2);
-        String TitleText=list.get(position).getTitle();
+        String TitleText=list.get(position).getContent();
         String TimeText=list.get(position).getTime();
         viewHolder.title.setText(TitleText);
         viewHolder.time.setText(TimeText);
         if(list.get(position).getState().equals("待完成")){
-            Bitmap bitmap=BitmapFactory.decodeStream(getClass().getResourceAsStream("/res/drawable/uncheck.png"));
+            Bitmap bitmap= BitmapFactory.decodeStream(getClass().getResourceAsStream("/res/drawable/uncheck.png"));
             viewHolder.check.setImageBitmap(bitmap);
         }else if(list.get(position).getState().equals("已完成")){
             Bitmap bitmap=BitmapFactory.decodeStream(getClass().getResourceAsStream("/res/drawable/check.png"));
-            viewHolder.check.setImageBitmap(bitmap);
-        }else{
-            Bitmap bitmap=BitmapFactory.decodeStream(getClass().getResourceAsStream("/res/drawable/cha.png"));
             viewHolder.check.setImageBitmap(bitmap);
         }
 

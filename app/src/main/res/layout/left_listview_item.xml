@@ -2,13 +2,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="horizontal"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/note_shape">
 
+<LinearLayout
+    android:id="@+id/left_listview_item_leftlayout"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="65dp">
     <LinearLayout
-        android:id="@+id/left_listview_item_leftlayout"
+
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
         android:orientation="vertical">
 
         <TextView
@@ -40,6 +47,19 @@
 
 
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginRight="15dp">
+        <ImageView
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:id="@+id/check"
+            android:layout_gravity="center_vertical"/>
+    </LinearLayout>
+
+</LinearLayout>
+
 
 
     <LinearLayout
@@ -51,6 +71,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
 
             <ImageView
                 android:layout_width="wrap_content"

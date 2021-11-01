@@ -1,11 +1,16 @@
 package com.example.daily.MyActivity;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,12 +18,13 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
+
 import com.example.daily.MyFragment.Fragment1;
 import com.example.daily.MyFragment.Fragment2;
 import com.example.daily.MyAdapter.MyViewFragmentAdapter;
-import com.example.daily.MyFragment.NoteDailogFragment;
 import com.example.daily.Others.DailyTask;
 import com.example.daily.Others.MyApplication;
+import com.example.daily.Others.MyService;
 import com.example.daily.Others.Plan;
 import com.example.daily.Others.Today;
 import com.example.daily.R;
@@ -26,13 +32,11 @@ import com.example.daily.util.CRUD;
 import com.example.daily.util.CRUDplan;
 import com.example.daily.util.CRUDtoday;
 import com.example.daily.util.MyTime;
+import com.example.daily.util.ToastUtil;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-
-import static com.example.daily.MyFragment.Fragment1.REQUEST_CODE_NEW;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -47,6 +51,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private List<Plan> plans=new ArrayList<>();
 
     private String today;
+    private AlarmManager alarmMgr;
+    private PendingIntent alarmIntent;
+
 
 
 
@@ -82,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Log.e("1256","1684894984984984998***");
             op.addNote(note);
             op.close();
-        }else if(op.getNote(1).getToday().compareTo(today)<0){
+        }else if(op.getNote(1).getToday().equals(today)==false){
             Log.e("1244444","1684894984984984998***");
             note.setId(1);
             op.updateNote(note);
@@ -92,10 +99,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             notes=op1.getStateNotes("待完成");
             Log.e("Size:",notes.size()+"***");
             for(DailyTask e:notes){
-                if(e.getTime().compareTo(today)<0){
+                String [] p1 = e.getTime().split("[年]");
+                String [] p2 = today.split("[年]");
+                String [] p3 = p1[1].split("[月]");
+                String [] p4 = p2[1].split("[月]");
+                if(p1[0].compareTo(p2[0])<0){
+                    e.setState("未完成");
+                    op1.updateNote(e);
+                }else if(p3[0].compareTo(p4[0])<0){
+                    e.setState("未完成");
+                    op1.updateNote(e);
+                }else if(Integer.parseInt(p3[1].split("[日]")[0])<Integer.parseInt(p4[1].split("[日]")[0])){
                     e.setState("未完成");
                     op1.updateNote(e);
                 }
+
             }
             op1.close();
 
@@ -113,11 +131,85 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void inittable() {
-        myToolbar = findViewById(R.id.myToolbar);
-        setSupportActionBar(myToolbar);
-        getSupportActionBar().setHomeButtonEnabled(false);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        myToolbar.setNavigationIcon(R.drawable.ic_menu_black_24dp);
+
+        final Switch aSwitch = findViewById(R.id.s_v);
+
+        aSwitch.setChecked(false);
+
+        aSwitch.setSwitchTextAppearance(MainActivity.this,R.style.s_false);
+
+        aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+            @Override
+
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+
+                //控制开关字体颜色
+
+                if (b) {
+
+                    aSwitch.setSwitchTextAppearance(MainActivity.this,R.style.s_true);
+
+//                    Intent intent = new Intent(context,AutoReceiver.class);
+//                    intent.setAction("VIDEO_TIMER");
+//                    // PendingIntent这个类用于处理即将发生的事情
+//
+//                    alarmIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
+//                    alarmMgr = (AlarmManager) getSystemService(ALARM_SERVICE);
+//                    Log.e("Tag", "onClick: 点击启动定时任务" );
+//                    Calendar calendar = Calendar.getInstance();
+//                    calendar.setTimeInMillis(System.currentTimeMillis());
+//                    calendar.set(Calendar.HOUR_OF_DAY, 10);
+//                    calendar.set(Calendar.MINUTE, 11);
+//
+//                    // With setInexactRepeating(), you have to use one of the AlarmManager interval
+//                    // constants--in this case, AlarmManager.INTERVAL_DAY.
+////                    alarmMgr.setRepeating(AlarmManager.RTC, calendar.getTimeInMillis(),
+////                            AlarmManager.INTERVAL_DAY, alarmIntent);
+//
+////                    alarmMgr.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+////                            SystemClock.elapsedRealtime(), 10* 1000, alarmIntent);
+//
+//                    alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+//                            1000 * 10, alarmIntent);
+
+
+
+                    Intent intent=new Intent(MainActivity.this, MyService.class);
+                    startService(intent);
+
+
+
+
+                    ToastUtil.showToast(context,"已开启明日提醒");
+
+
+
+                }else {
+
+                    aSwitch.setSwitchTextAppearance(MainActivity.this,R.style.s_false);
+//                    if(alarmIntent==null){
+//
+//                        // 与上面的intent匹配（filterEquals(intent)）的闹钟会被取消
+//                        // 进行闹铃取消
+//                        Intent intent = new Intent(MainActivity.this, AutoReceiver.class);
+//                        intent.setAction("VIDEO_TIMER");
+//                        alarmIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//                        AlarmManager manager1 = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+//                        manager1.cancel(alarmIntent);
+//                    }else {
+//                        AlarmManager manager1 = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+//                        manager1.cancel(alarmIntent);
+//                    }
+
+
+                    ToastUtil.showToast(context,"已关闭明日提醒");
+
+                }
+
+            }
+
+        });
         lmsg=findViewById(R.id.msg);
         lsig=findViewById(R.id.signal);
         imsg=findViewById(R.id.imsg);

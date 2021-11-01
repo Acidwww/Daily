@@ -276,11 +276,10 @@ public class Fragment1 extends Fragment {
 
 
     private void removeNote(int position) {
-        String result=todonotes.get(position).getTitle()+"\n"+position;
-        ToastUtil.showToast(context,result);
+        ToastUtil.showToast(context,"删除成功！");
         CRUD op = new CRUD(context);
         op.open();
-        op.removeNote(op.getAllNotes().get(position).getId());
+        op.removeNote(todonotes.get(position).getId());
         op.close();
         refreshListView();
     }
@@ -343,9 +342,20 @@ public class Fragment1 extends Fragment {
             todonotes.clear();
         }
         for(DailyTask e:allnotes){
-            if(e.getTime().compareTo(today)>=0){
+            String [] p1 = e.getTime().split("[年]");
+            String [] p2 = today.split("[年]");
+            String [] p3 = p1[1].split("[月]");
+            String [] p4 = p2[1].split("[月]");
+            if(p1[0].compareTo(p2[0])>0){
+                todonotes.add(e);
+            }else if(p3[0].compareTo(p4[0])>0){
+                todonotes.add(e);
+            }else if(Integer.parseInt(p3[1].split("[日]")[0])>=Integer.parseInt(p4[1].split("[日]")[0])){
                 todonotes.add(e);
             }
+
+
+
         }
         if (todonotes.size() > 0) {
             TextView emptytext=rootview.findViewById(R.id.empty_text);

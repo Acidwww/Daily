@@ -205,7 +205,7 @@ public class Fragment2 extends Fragment {
                     @Override
                     public boolean onBackPressed(BasePopupView v) {
 
-                        ToastUtil.showToast(context,"我拦截的返回按键，按返回键XPopup不会关闭了");
+
                         return true; //默认返回false
                     }
                 })

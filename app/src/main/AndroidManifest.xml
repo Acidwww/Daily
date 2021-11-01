@@ -22,6 +22,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".MyActivity.EditActivity" />
+        <!--定时 -->
+        <service android:name=".Others.MyService"/>
     </application>
 
 </manifest>

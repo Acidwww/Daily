@@ -9,20 +9,31 @@
 ## 模块一：每日任务
   添加的事件
   ![](https://s3.bmp.ovh/imgs/2021/12/15637bab778733a0.jpg)
+  
   勾选将在已完成中显示
+  
   ![](https://s3.bmp.ovh/imgs/2021/12/006ccc38e5383d03.jpg)
+  
   添加弹窗
+  
   ![](https://s3.bmp.ovh/imgs/2021/12/b94900842e4a721f.png)
+  
   修改界面
+  
   ![](https://s3.bmp.ovh/imgs/2021/12/2af8bf4c29daf859.png)
 
 ****
 ## 模块二：待办事件
   待办事项
+  
   ![](https://s3.bmp.ovh/imgs/2021/12/f7f6504d710063bd.png)
+  
   添加弹窗
+  
   ![](https://s3.bmp.ovh/imgs/2021/12/29b52a4a0807f393.png)
+  
   修改界面
+  
   ![](https://s3.bmp.ovh/imgs/2021/12/0c424151f171c497.png)
 
 ****
